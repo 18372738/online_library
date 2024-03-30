@@ -31,11 +31,15 @@ def get_author_and_title(number_book):
     title_and_author = soup.find('div',       id='content').find('h1').text.split('::')
     author = sanitize_filename(title_and_author[-1].strip())
     title = sanitize_filename(title_and_author[0].strip())
-    return author, title
+    genres = soup.find('span', class_='d_book').find_all('a')
+    all_genres = []
+    for genre in genres:
+        all_genres.append(genre.text)
+    return author, title, all_genres
 
 
 def download_txt(number_book, folder='books/'):
-    author, title = get_author_and_title(number_book)
+    author, title, all_genres = get_author_and_title(number_book)
     filename = f"{title}.txt"
     path = os.path.join(folder, filename)
     return(path)
