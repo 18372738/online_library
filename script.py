@@ -75,9 +75,26 @@ def download_image(url, folder='images/'):
         return None
 
 
+def download_comments(number_book):
+    url = f'https://tululu.org/b{number_book}/'
+    response = requests.get(url)
+    response.raise_for_status()
+    try:
+        check_for_redirect(response)
+        soup = BeautifulSoup(response.text, 'lxml')
+        text_comments = soup.find('div', id='content').find_all('span', class_='black')
+        all_comments = []
+        for comment in text_comments:
+              all_comments.append(comment.text)
+        return all_comments
+    except requests.exceptions.HTTPError:
+        return None
+
+
 if __name__ == "__main__":
     for number_book in range(1, 11):
         get_catalog_books(number_book)
+        print(download_comments(number_book))
         url = get_image_url(number_book)
         if url:
             download_image(url)
