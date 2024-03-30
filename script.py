@@ -1,5 +1,6 @@
 import os
 from urllib.parse import urljoin, urlsplit, unquote
+import argparse
 
 import requests
 from bs4 import BeautifulSoup
@@ -8,12 +9,12 @@ from pathvalidate import sanitize_filename
 
 
 
-def parse_book_page(soup):
+def parse_book_page(soup, url):
     title_and_author = soup.find('div', id='content').find('h1').text.split('::')
     author = sanitize_filename(title_and_author[-1].strip())
     title = sanitize_filename(title_and_author[0].strip())
     path_image = soup.find('div', class_='bookimage').find('img')['src']
-    image_url = urljoin('https://tululu.org', path_image)
+    image_url = urljoin(url, path_image)
     text_comments = soup.find('div', id='content').find_all('span', class_='black')
     comments = []
     for comment in text_comments:
@@ -57,14 +58,20 @@ def check_for_redirect(response):
 
 if __name__ == "__main__":
     url_template = "https://tululu.org/b"
-    for number_book in range(1, 11):
+    parser = argparse.ArgumentParser(description='Скачивает книги с сайта tululu.org.')
+    parser.add_argument('--first', default=1, type=int, help='id первой книги для скачивания.')
+    parser.add_argument('--last', default=10, type=int, help='id последней книги для скачивания.')
+    args = parser.parse_args()
+    number_first_book = args.first
+    number_last_book = args.last + 1
+    for number_book in range(number_first_book, number_last_book):
         url = f"{url_template}{number_book}/"
         response = requests.get(url)
         response.raise_for_status()
         try:
             check_for_redirect(response)
             soup = BeautifulSoup(response.text, 'lxml')
-            book = parse_book_page(soup)
+            book = parse_book_page(soup, url)
 
             title = book['title']
             download_book_url = f"https://tululu.org/txt.php?id={number_book}"
