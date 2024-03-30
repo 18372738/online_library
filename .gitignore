@@ -13,6 +13,7 @@ replit*
 *.lock
 .gitattributes
 images*
+books*
 
 # C extensions
 *.so
