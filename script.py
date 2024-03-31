@@ -15,14 +15,10 @@ def parse_book_page(soup, url):
     title = sanitize_filename(title_and_author[0].strip())
     path_image = soup.find('div', class_='bookimage').find('img')['src']
     image_url = urljoin(url, path_image)
-    text_comments = soup.find('div', id='content').find_all('span', class_='black')
-    comments = []
-    for comment in text_comments:
-          comments.append(comment.text)
-    text_genres = soup.find('span', class_='d_book').find_all('a')
-    genres = []
-    for genre in text_genres:
-        genres.append(genre.text)
+    comments_html = soup.find('div', id='content').find_all('span', class_='black')
+    comments = [comment.text for comment in comments_html]
+    genres_html = soup.find('span', class_='d_book').find_all('a')
+    genres = [genre.text for genre in genres_html]
     book = {
         'title': title,
         'author': author,
@@ -59,11 +55,11 @@ def check_for_redirect(response):
 if __name__ == "__main__":
     url_template = "https://tululu.org/b"
     parser = argparse.ArgumentParser(description='Скачивает книги с сайта tululu.org.')
-    parser.add_argument('--first', default=1, type=int, help='id первой книги для скачивания.')
-    parser.add_argument('--last', default=10, type=int, help='id последней книги для скачивания.')
+    parser.add_argument('--first_id', default=1, type=int, help='id первой книги для скачивания.')
+    parser.add_argument('--last_id', default=10, type=int, help='id последней книги для скачивания.')
     args = parser.parse_args()
-    number_first_book = args.first
-    number_last_book = args.last + 1
+    number_first_book = args.first_id
+    number_last_book = args.last_id + 1
     for number_book in range(number_first_book, number_last_book):
         url = f"{url_template}{number_book}/"
         response = requests.get(url)
@@ -84,5 +80,10 @@ if __name__ == "__main__":
             response = requests.get(image_url)
             response.raise_for_status()
             download_image(response.content, image_url)
+
+            print("Название:", book['title'])
+            print("Жанр:", book['genres'])
+            print("Комментарии:", book['comments'])
+            print('')
         except requests.exceptions.HTTPError:
                 print(f'По ссылке {url} книга не найдена.')
