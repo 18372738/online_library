@@ -33,7 +33,7 @@ python script.py --first_id 10 --last_id 20
 
 Пример корректной работы кода с указанными параметрами
 
-![Анимация9](https://gist.github.com/assets/133884450/c5909420-6196-4d2e-85e6-d32293eb1003)
+![Анимация9](https://github.com/18372738/online_library/assets/133884450/d7c79b4d-09c7-41a7-b849-a1b78a0ba720)
 
 
 
