@@ -70,8 +70,9 @@ if __name__ == "__main__":
             book = parse_book_page(soup, url)
 
             title = book['title']
-            download_book_url = f"https://tululu.org/txt.php?id={number_book}"
-            response = requests.get(download_book_url)
+            download_book_url = "https://tululu.org/txt.php"
+            payload = {'id': number_book}
+            response = requests.get(download_book_url, params=payload)
             response.raise_for_status()
             check_for_redirect(response)
             download_txt(response.content, title)
