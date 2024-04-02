@@ -1,6 +1,8 @@
 import os
+import sys
 from urllib.parse import urljoin, urlsplit, unquote
 import argparse
+import time
 
 import requests
 from bs4 import BeautifulSoup
@@ -86,5 +88,9 @@ if __name__ == "__main__":
             print("Жанр:", book['genres'])
             print("Комментарии:", book['comments'])
             print('')
+
+        except requests.exceptions.ConnectionError:
+                print('Нет подключения к сайту')
+                time.sleep(3)
         except requests.exceptions.HTTPError:
                 print(f'По ссылке {url} книга не найдена.')
