@@ -25,7 +25,7 @@ def parse_book_page(soup, url):
         'genres': genres,
         'image_url': image_url,
         'comments': comments,
-        }
+    }
     return book
 
 
@@ -35,7 +35,7 @@ def download_txt(content, title, folder='books/'):
     path = os.path.join(folder, filename)
     with open(path, 'wb') as file:
         file.write(content)
-    return(path)
+    return path
 
 
 def download_image(content, url, folder='images/'):
@@ -58,9 +58,9 @@ if __name__ == "__main__":
     parser.add_argument('--first_id', default=1, type=int, help='id первой книги для скачивания.')
     parser.add_argument('--last_id', default=10, type=int, help='id последней книги для скачивания.')
     args = parser.parse_args()
-    number_first_book = args.first_id
-    number_last_book = args.last_id + 1
-    for number_book in range(number_first_book, number_last_book):
+    first_number_book = args.first_id
+    last_number_book = args.last_id + 1
+    for number_book in range(first_number_book, last_number_book):
         url = f"{url_template}{number_book}/"
         response = requests.get(url)
         response.raise_for_status()
