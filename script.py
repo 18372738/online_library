@@ -55,25 +55,25 @@ def check_for_redirect(response):
 
 
 if __name__ == "__main__":
-    url_template = "https://tululu.org/b"
+    url_template = 'https://tululu.org/b'
     parser = argparse.ArgumentParser(description='Скачивает книги с сайта tululu.org.')
     parser.add_argument('--first_id', default=1, type=int, help='id первой книги для скачивания.')
     parser.add_argument('--last_id', default=10, type=int, help='id последней книги для скачивания.')
     args = parser.parse_args()
-    first_number_book = args.first_id
-    last_number_book = args.last_id + 1
-    for number_book in range(first_number_book, last_number_book):
-        url = f"{url_template}{number_book}/"
-        response = requests.get(url)
-        response.raise_for_status()
+    first_book_number = args.first_id
+    last_book_number = args.last_id + 1
+    for book_number in range(first_book_number, last_book_number):
+        url = f"{url_template}{book_number}/"
         try:
+            response = requests.get(url)
+            response.raise_for_status()
             check_for_redirect(response)
             soup = BeautifulSoup(response.text, 'lxml')
             book = parse_book_page(soup, url)
 
             title = book['title']
-            download_book_url = "https://tululu.org/txt.php"
-            payload = {'id': number_book}
+            download_book_url = 'https://tululu.org/txt.php'
+            payload = {'id': book_number}
             response = requests.get(download_book_url, params=payload)
             response.raise_for_status()
             check_for_redirect(response)
@@ -84,9 +84,9 @@ if __name__ == "__main__":
             response.raise_for_status()
             download_image(response.content, image_url)
 
-            print("Название:", book['title'])
-            print("Жанр:", book['genres'])
-            print("Комментарии:", book['comments'])
+            print('Название:', book['title'])
+            print('Жанр:', book['genres'])
+            print('Комментарии:', book['comments'])
             print('')
 
         except requests.exceptions.ConnectionError:
